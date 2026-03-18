@@ -197,4 +197,4 @@ MIT — see [LICENSE](LICENSE).
 
 ## Author
 
-**VijayKumaro7** · [GitHub](https://github.com/VijayKumaro7) · [LinkedIn](https://linkedin.com/in/vijay-kumar) · [Blog](https://hashnode.com/@VijayKumaro7)
+**VijayKumaro7** · [GitHub](https://github.com/VijayKumaro7) · [LinkedIn](https://www.linkedin.com/in/vijay-kumar070/) · [Blog](https://hashnode.com/@VijayKumaro7)
