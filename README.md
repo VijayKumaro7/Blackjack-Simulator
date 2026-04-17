@@ -34,7 +34,7 @@ Net earnings, win rate, hands played, and house edge — colour-coded green (pla
 
 ---
 
-### Hi-Lo card counting — 1–4 bet spread
+### Hi-Lo card counting — 1–4 bet spread 
 
 Enable **Hi-Lo system** and set a bet spread. The simulator automatically raises bets when the true count is favorable. The badge and running/true count display update after each run.
 
