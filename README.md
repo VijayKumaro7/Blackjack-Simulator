@@ -55,7 +55,7 @@ The full hard-total basic strategy table is always visible. The hand log shows t
 - **~100,000 hands/sec** — 50,000-hand simulation finishes in under a second
 - **Full basic strategy** — hard totals, soft totals, pair splitting, Illustrious 18 index deviations
 - **5 player strategies** — basic, always-17, mimic dealer, never-bust, random
-- **6 card counting systems** — Hi-Lo, KO, Hi-Opt I, Omega II, Zen Count
+- **5 card counting systems** — Hi-Lo, KO, Hi-Opt I, Omega II, Zen Count
 - **Bet spread sizing** — auto-scales bets from 1× to N× based on true count
 - **Earnings chart** — live line chart with green/red fill under the curve
 - **Hand log** — last 20 hands with full detail
