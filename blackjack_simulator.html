@@ -6,24 +6,24 @@
 <title>Blackjack Simulator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:      #0f1117;
-    --bg2:     #161820;
-    --bg3:     #1e2029;
-    --border:  rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text:    #e8eaf0;
-    --muted:   #8b8fa8;
-    --green:   #4ade80;
-    --red:     #f87171;
-    --yellow:  #fbbf24;
-    --blue:    #60a5fa;
-    --teal:    #2dd4bf;
-    --radius:  10px;
+    --bg:      #FBF4E6;
+    --bg2:     #F7EDE1;
+    --bg3:     #F1E5D7;
+    --border:  rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.12);
+    --text:    #1a1410;
+    --text-light: #5c4d42;
+    --muted:   #8b7969;
+    --green:   #2d6a4f;
+    --red:     #a61f34;
+    --gold:    #d4a574;
+    --teal:    #6b4423;
+    --radius:  12px;
     --mono:    'JetBrains Mono', monospace;
     --sans:    'DM Sans', sans-serif;
   }
@@ -34,174 +34,320 @@
     font-family: var(--sans);
     font-size: 14px;
     min-height: 100vh;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   /* ── Layout ── */
-  .page { max-width: 980px; margin: 0 auto; padding: 28px 20px 48px; }
+  .page { max-width: 1200px; margin: 0 auto; padding: 32px 20px 48px; }
 
   .header {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
   }
-  .header-icon { font-size: 22px; }
-  .header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
-  .header p  { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .header-icon {
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: var(--bg3);
+    border-radius: var(--radius);
+    color: var(--teal);
+  }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--teal);
+  }
+  .header p  {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
 
   /* ── Stat cards ── */
   .stats-row {
-    display: grid; grid-template-columns: repeat(4,1fr); gap: 10px;
-    margin-bottom: 16px;
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 12px;
+    margin-bottom: 24px;
   }
   .stat {
-    background: var(--bg3);
+    background: linear-gradient(135deg, #fff9f0 0%, #f7ede1 100%);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 14px 16px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-  .stat-val   { font-size: 22px; font-weight: 600; font-family: var(--mono); }
+  .stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .stat-val {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: var(--mono);
+    letter-spacing: -0.01em;
+  }
   .stat-val.pos { color: var(--green); }
   .stat-val.neg { color: var(--red); }
-  .stat-val.neu { color: var(--text); }
+  .stat-val.neu { color: var(--teal); }
 
   /* ── Two-panel row ── */
-  .panel-row { display: grid; grid-template-columns: 320px 1fr; gap: 12px; margin-bottom: 12px; }
+  .panel-row { display: grid; grid-template-columns: 340px 1fr; gap: 16px; margin-bottom: 20px; }
 
   .panel {
-    background: var(--bg2);
+    background: linear-gradient(135deg, #fffbf7 0%, #f9f0e8 100%);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px 18px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
   .panel-title {
-    font-size: 11px; font-weight: 500; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .07em;
-    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 16px;
   }
 
   /* ── Controls ── */
-  .ctrl { margin-bottom: 12px; }
-  .ctrl-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .ctrl-label { font-size: 12px; color: var(--muted); }
-  .ctrl-val   { font-size: 12px; font-weight: 500; font-family: var(--mono); color: var(--blue); }
+  .ctrl { margin-bottom: 14px; }
+  .ctrl-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .ctrl-label { font-size: 12px; color: var(--text-light); font-weight: 500; }
+  .ctrl-val   {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--mono);
+    color: var(--teal);
+  }
 
   input[type=range] {
-    width: 100%; height: 4px; appearance: none;
-    background: var(--border2); border-radius: 2px; cursor: pointer; outline: none;
+    width: 100%;
+    height: 6px;
+    appearance: none;
+    background: var(--bg3);
+    border-radius: 3px;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid var(--border);
   }
   input[type=range]::-webkit-slider-thumb {
-    appearance: none; width: 14px; height: 14px;
-    border-radius: 50%; background: var(--blue); cursor: pointer;
-    border: 2px solid var(--bg2);
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--teal);
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--teal);
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
   }
 
   select {
-    width: 100%; padding: 7px 10px; font-size: 12px;
-    font-family: var(--sans); color: var(--text);
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 6px; cursor: pointer; outline: none;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: var(--sans);
+    color: var(--text);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b7969' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 28px;
+    background-position: right 12px center;
+    padding-right: 32px;
+    transition: all 0.2s;
   }
-  select:focus { border-color: var(--blue); }
+  select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
+  }
 
   /* Run button */
   .run-btn {
-    width: 100%; padding: 10px; margin-top: 4px;
-    font-size: 13px; font-weight: 600; font-family: var(--sans);
-    color: var(--bg); background: var(--blue);
-    border: none; border-radius: 7px; cursor: pointer;
-    transition: opacity .15s, transform .1s;
-    letter-spacing: .01em;
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--sans);
+    color: white;
+    background: linear-gradient(135deg, var(--teal) 0%, #5c3a20 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 12px rgba(107, 68, 35, 0.25);
   }
-  .run-btn:hover  { opacity: .88; }
-  .run-btn:active { transform: scale(.98); }
-  .run-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .run-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(107, 68, 35, 0.35);
+  }
+  .run-btn:active:not(:disabled) { transform: translateY(0); }
+  .run-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* Progress bar */
-  .prog-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
-  .prog-fill  { height: 100%; width: 0%; background: var(--blue); border-radius: 2px; transition: width .08s linear; }
+  .prog-wrap { height: 4px; background: var(--bg3); border-radius: 2px; margin-top: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .prog-fill  { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal) 0%, var(--gold) 100%); border-radius: 2px; transition: width .1s linear; }
 
   /* ── Chart ── */
-  .chart-wrap { position: relative; width: 100%; height: 190px; }
+  .chart-wrap { position: relative; width: 100%; height: 220px; margin-bottom: 12px; }
 
   .count-row {
     display: flex; justify-content: space-between; align-items: center;
-    margin-top: 10px;
   }
-  .count-label { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .count-label { font-size: 12px; color: var(--text-light); font-family: var(--mono); font-weight: 500; }
   .tc-badge {
-    font-size: 11px; font-weight: 500; padding: 3px 10px;
-    border-radius: 20px; border: 1px solid var(--border2);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
     font-family: var(--mono);
+    transition: all 0.2s;
   }
-  .tc-pos { color: var(--green); border-color: rgba(74,222,128,.25); background: rgba(74,222,128,.08); }
-  .tc-neg { color: var(--red);   border-color: rgba(248,113,113,.25); background: rgba(248,113,113,.08); }
-  .tc-neu { color: var(--muted); }
+  .tc-pos {
+    color: var(--green);
+    border-color: rgba(45,106,79,.3);
+    background: rgba(45,106,79,.08);
+  }
+  .tc-neg {
+    color: var(--red);
+    border-color: rgba(166,31,52,.3);
+    background: rgba(166,31,52,.08);
+  }
+  .tc-neu {
+    color: var(--teal);
+    border-color: rgba(107,68,35,.2);
+    background: rgba(107,68,35,.05);
+  }
 
   /* ── Bottom row ── */
-  .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
   /* ── Strategy table ── */
   .strat-scroll { overflow-x: auto; }
   table.strat {
-    width: 100%; border-collapse: collapse;
-    font-size: 10px; font-family: var(--mono);
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-family: var(--mono);
   }
   table.strat th {
-    padding: 4px 5px; text-align: center;
-    color: var(--muted); font-weight: 500;
+    padding: 6px 5px;
+    text-align: center;
+    color: var(--text-light);
+    font-weight: 600;
     background: var(--bg3);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
   }
   table.strat td {
-    padding: 3px 5px; text-align: center;
-    border: 1px solid rgba(255,255,255,0.04);
+    padding: 4px 5px;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
   }
-  .cH  { background: rgba(74,222,128,.13); color: #4ade80; }
-  .cS  { background: rgba(248,113,113,.13); color: #f87171; }
-  .cD  { background: rgba(96,165,250,.13);  color: #60a5fa; }
-  .cP  { background: rgba(192,132,252,.13); color: #c084fc; }
+  table.strat tr:hover td {
+    background: rgba(107,68,35,0.04);
+  }
+  .cH  { background: rgba(45,106,79,.12); color: var(--green); font-weight: 600; }
+  .cS  { background: rgba(166,31,52,.12); color: var(--red); font-weight: 600; }
+  .cD  { background: rgba(212,165,116,.12); color: var(--gold); font-weight: 600; }
+  .cP  { background: rgba(107,68,35,.12); color: var(--teal); font-weight: 600; }
 
-  .legend { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .legend { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
   .legend span {
-    font-size: 10px; font-family: var(--mono);
-    padding: 2px 8px; border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--bg3);
+    color: var(--text-light);
   }
 
   /* ── Hand log ── */
   .log {
-    height: 198px; overflow-y: auto;
-    font-size: 11px; font-family: var(--mono);
-    color: var(--muted);
+    height: 220px;
+    overflow-y: auto;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-light);
+    padding-right: 4px;
   }
-  .log::-webkit-scrollbar { width: 4px; }
-  .log::-webkit-scrollbar-track { background: transparent; }
-  .log::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  .log::-webkit-scrollbar { width: 6px; }
+  .log::-webkit-scrollbar-track { background: var(--bg3); border-radius: 3px; }
+  .log::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+  .log::-webkit-scrollbar-thumb:hover {
+    background: var(--border2);
+  }
 
   .log-entry {
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    display: flex; gap: 8px; align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    transition: background 0.2s;
+  }
+  .log-entry:hover {
+    background: rgba(107,68,35,0.04);
   }
   .log-entry:last-child { border-bottom: none; }
-  .log-num  { color: rgba(139,143,168,.5); min-width: 38px; }
-  .log-win  { color: var(--green); }
-  .log-bj   { color: var(--yellow); }
-  .log-loss { color: var(--red); }
+  .log-num  { color: var(--muted); min-width: 40px; font-weight: 600; }
+  .log-win  { color: var(--green); font-weight: 600; }
+  .log-bj   { color: var(--gold); font-weight: 700; }
+  .log-loss { color: var(--red); font-weight: 600; }
   .log-push { color: var(--muted); }
-  .log-empty { color: var(--muted); font-style: italic; padding: 8px 0; }
+  .log-empty { color: var(--muted); font-style: italic; padding: 12px 0; text-align: center; }
 
   /* Responsive */
-  @media (max-width: 700px) {
+  @media (max-width: 800px) {
     .panel-row, .bottom-row { grid-template-columns: 1fr; }
     .stats-row { grid-template-columns: repeat(2,1fr); }
+    .header { flex-direction: column; align-items: flex-start; text-align: left; }
+    .page { padding: 20px 16px 32px; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .header-icon { width: 40px; height: 40px; font-size: 24px; }
+    .header h1 { font-size: 20px; }
+    .panel-row { grid-template-columns: 320px 1fr; }
   }
 </style>
 </head>
@@ -213,16 +359,28 @@
     <span class="header-icon">♠</span>
     <div>
       <h1>Blackjack Simulator</h1>
-      <p>Monte Carlo strategy &amp; card counting analyzer</p>
+      <p>Monte Carlo strategy & card counting analyzer</p>
     </div>
   </div>
 
   <!-- Stat cards -->
   <div class="stats-row">
-    <div class="stat"><div class="stat-label">Net earnings</div><div class="stat-val neu" id="st-earn">$0</div></div>
-    <div class="stat"><div class="stat-label">Win rate</div><div class="stat-val neu" id="st-wr">—</div></div>
-    <div class="stat"><div class="stat-label">Hands played</div><div class="stat-val neu" id="st-hands">0</div></div>
-    <div class="stat"><div class="stat-label">House edge</div><div class="stat-val neu" id="st-edge">—</div></div>
+    <div class="stat">
+      <div class="stat-label">Net earnings</div>
+      <div class="stat-val neu" id="st-earn">$0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Win rate</div>
+      <div class="stat-val neu" id="st-wr">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Hands played</div>
+      <div class="stat-val neu" id="st-hands">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">House edge</div>
+      <div class="stat-val neu" id="st-edge">—</div>
+    </div>
   </div>
 
   <!-- Controls + Chart -->
@@ -230,7 +388,7 @@
 
     <!-- Left: controls -->
     <div class="panel">
-      <div class="panel-title">Simulation settings</div>
+      <div class="panel-title">Simulation Settings</div>
 
       <div class="ctrl">
         <div class="ctrl-row"><span class="ctrl-label">Hands to simulate</span><span class="ctrl-val" id="lbl-hands">1,000</span></div>
@@ -251,7 +409,7 @@
       </div>
 
       <div class="ctrl">
-        <div class="ctrl-row" style="margin-bottom:6px"><span class="ctrl-label">Player strategy</span></div>
+        <div class="ctrl-row" style="margin-bottom:8px"><span class="ctrl-label">Player strategy</span></div>
         <select id="sel-strategy">
           <option value="basic">Basic strategy (optimal)</option>
           <option value="always17">Always stand on 17+</option>
@@ -262,11 +420,14 @@
       </div>
 
       <div class="ctrl">
-        <div class="ctrl-row" style="margin-bottom:6px"><span class="ctrl-label">Card counting</span></div>
+        <div class="ctrl-row" style="margin-bottom:8px"><span class="ctrl-label">Card counting</span></div>
         <select id="sel-count" onchange="toggleSpread()">
           <option value="none">No counting</option>
           <option value="hilow">Hi-Lo system</option>
           <option value="ko">KO (Knockout) system</option>
+          <option value="hiopt1">Hi-Opt I system</option>
+          <option value="omega2">Omega II system</option>
+          <option value="zen">Zen Count system</option>
         </select>
       </div>
 
@@ -282,7 +443,7 @@
 
     <!-- Right: chart -->
     <div class="panel">
-      <div class="panel-title">Earnings over time</div>
+      <div class="panel-title">Earnings Over Time</div>
       <div class="chart-wrap"><canvas id="earn-chart"></canvas></div>
       <div class="count-row">
         <span class="count-label" id="count-display">Card counting: off</span>
@@ -294,7 +455,7 @@
   <!-- Strategy table + Log -->
   <div class="bottom-row">
     <div class="panel">
-      <div class="panel-title">Basic strategy — hard totals</div>
+      <div class="panel-title">Basic Strategy — Hard Totals</div>
       <div class="strat-scroll" id="strat-table"></div>
       <div class="legend">
         <span class="cH">H Hit</span>
@@ -305,7 +466,7 @@
     </div>
 
     <div class="panel">
-      <div class="panel-title">Hand log — last 20</div>
+      <div class="panel-title">Hand Log — Last 20</div>
       <div class="log" id="hand-log">
         <div class="log-empty">Run a simulation to see results…</div>
       </div>
@@ -351,6 +512,20 @@ const DEVIATIONS=[
   [12,2,3,false,'S'],[10,10,4,false,'D'],[11,11,1,false,'D'],
 ];
 
+// Card counting values
+const COUNTING_SYSTEMS = {
+  hilow: {2:1,3:1,4:1,5:1,6:1,7:0,8:0,9:0,10:-1,11:-1},
+  ko: {2:1,3:1,4:1,5:1,6:1,7:1,8:0,9:0,10:-1,11:-1},
+  hiopt1: {2:0,3:1,4:1,5:1,6:1,7:0,8:0,9:1,10:-1,11:-1},
+  omega2: {2:1,3:1,4:2,5:2,6:2,7:1,8:0,9:-1,10:-2,11:-2},
+  zen: {2:1,3:1,4:2,5:2,6:2,7:1,8:0,9:-1,10:-2,11:-2},
+};
+
+function getCountingValue(system, card) {
+  const sys = COUNTING_SYSTEMS[system];
+  return sys ? sys[card] || 0 : 0;
+}
+
 function decide(strategy,pCards,dUp,tc){
   const total=handValue(pCards),soft=isSoft(pCards),canDbl=pCards.length===2,canSpl=canDbl&&pCards[0]===pCards[1];
   if(strategy==='always17') return total>=17?'S':'H';
@@ -376,9 +551,6 @@ function buildShoe(n){
   return shoe;
 }
 
-// ── Card counting ─────────────────────────────────────────────────────────────
-function hlVal(c){return c>=2&&c<=6?1:c<=9?0:-1;}
-
 // ── Play one hand ─────────────────────────────────────────────────────────────
 function playHand(shoe,idx,strategy,bet,rc,numDecks){
   function draw(){
@@ -386,7 +558,7 @@ function playHand(shoe,idx,strategy,bet,rc,numDecks){
     return shoe[idx[0]++];
   }
   const sys=rc.system,spread=rc.spread;
-  function track(c){if(sys!=='none')rc.v+=hlVal(c);}
+  function track(c){if(sys!=='none')rc.v+=getCountingValue(sys,c);}
 
   let p=[draw(),draw()],d=[draw(),draw()];
   p.forEach(track);track(d[0]);
@@ -450,11 +622,11 @@ let chart;
 function initChart(){
   if(chart)chart.destroy();
   chart=new Chart(document.getElementById('earn-chart'),{
-    type:'line',data:{labels:[],datasets:[{data:[],borderWidth:1.5,pointRadius:0,tension:.3,fill:true}]},
+    type:'line',data:{labels:[],datasets:[{data:[],borderWidth:2.5,pointRadius:0,tension:.2,fill:true}]},
     options:{responsive:true,maintainAspectRatio:false,animation:false,
       plugins:{legend:{display:false}},
-      scales:{x:{display:false},y:{grid:{color:'rgba(255,255,255,0.05)'},
-        ticks:{color:'#8b8fa8',font:{size:10,family:'JetBrains Mono'},
+      scales:{x:{display:false},y:{grid:{color:'rgba(0,0,0,0.05)',drawBorder:false},
+        ticks:{color:'#8b7969',font:{size:11,family:'JetBrains Mono',weight:'500'},
           callback:v=>'$'+(v>=0?'+':'')+Math.round(v).toLocaleString()}}}}
   });
 }
@@ -532,8 +704,8 @@ function runSim(){
     chart.data.labels=hist.map((_,i)=>i);
     chart.data.datasets[0].data=hist;
     const pos=earn>=0;
-    chart.data.datasets[0].borderColor=pos?'#4ade80':'#f87171';
-    chart.data.datasets[0].backgroundColor=pos?'rgba(74,222,128,.07)':'rgba(248,113,113,.07)';
+    chart.data.datasets[0].borderColor=pos?'#2d6a4f':'#a61f34';
+    chart.data.datasets[0].backgroundColor=pos?'rgba(45,106,79,.08)':'rgba(166,31,52,.08)';
     chart.update();
 
     // Stats
