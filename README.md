@@ -10,7 +10,7 @@
 
 ## Interactive UI
 
-Open `blackjack_simulator_ui.html` directly in any browser — no install, no server needed.
+Open `blackjack_simulator.html` directly in any browser — no install, no server needed.
 
 ### Dashboard — initial state
 
@@ -72,7 +72,7 @@ The full hard-total basic strategy table is always visible. The hand log shows t
 ```bash
 git clone https://github.com/VijayKumaro7/blackjack-simulator.git
 cd blackjack-simulator
-open blackjack_simulator_ui.html   # macOS
+open blackjack_simulator.html   # macOS
 # or just double-click the file in Windows / Linux
 ```
 
@@ -120,7 +120,7 @@ print(stats.summary())
 
 ```
 blackjack-simulator/
-├── blackjack_simulator_ui.html   ← Standalone browser UI (open directly)
+├── blackjack_simulator.html      ← Standalone browser UI (open directly)
 ├── blackjack/
 │   ├── __init__.py               ← Public API
 │   ├── simulator.py              ← Core engine: shoe, hand play, settlement
